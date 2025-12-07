@@ -493,6 +493,65 @@
       </div>
     </section>
 
+    <!-- PERFIL LOCAL -->
+<section id="perfil">
+  <h2 class="section-title">Tu espacio CMF•IA</h2>
+  <p class="section-subtitle">
+    Guardá tu nombre en este dispositivo y usá EduFin IA como tu espacio personal de práctica financiera.
+  </p>
+
+  <div class="grid-2">
+    <!-- Columna izquierda: formulario de perfil -->
+    <div class="card">
+      <div class="field">
+        <label for="perfil-nombre-input">Tu nombre o alias</label>
+        <input
+          id="perfil-nombre-input"
+          type="text"
+          placeholder="Ej: Ana, Carlos, Mi Familia, etc."
+        />
+      </div>
+      <div class="field">
+        <label for="perfil-mail-input">Correo (opcional)</label>
+        <input
+          id="perfil-mail-input"
+          type="email"
+          placeholder="Ej: nombre@correo.com"
+        />
+      </div>
+      <button class="btn btn-primary" type="button" onclick="guardarPerfilLocal()">
+        Guardar mi perfil en este dispositivo
+      </button>
+      <button class="btn btn-outline" type="button" style="margin-top:.5rem;" onclick="borrarPerfilLocal()">
+        Borrar perfil de este dispositivo
+      </button>
+      <p class="tiny" style="margin-top:.5rem;">
+        Los datos se guardan solo en este navegador, no se envían a ningún servidor.
+      </p>
+    </div>
+
+    <!-- Columna derecha: saludo + resumen -->
+    <div class="card">
+      <p><strong>Bienvenido/a, <span id="perfil-nombre">invitado/a</span></strong></p>
+      <p class="tiny" id="perfil-mail-text" style="margin-top:.2rem;">
+        Podés agregar un correo si querés, pero no es obligatorio.
+      </p>
+
+      <p class="tiny" style="margin-top:.8rem;">
+        Resumen de tu práctica en este dispositivo:
+      </p>
+      <ul style="font-size:.88rem;margin-top:.4rem;list-style:none;padding-left:0;">
+        <li>📚 Lecciones generadas: <span id="perfil-lessons">0</span></li>
+        <li>✅ Quizzes aprobados: <span id="perfil-quizzes-ok">0</span></li>
+        <li>🧩 Quizzes realizados: <span id="perfil-quizzes-total">0</span></li>
+      </ul>
+      <p class="tiny" style="margin-top:.7rem;">
+        Este es un resumen rápido del mismo progreso que ves en la sección “Métricas y reportes”, pero presentado como tu panel personal CMF•IA.
+      </p>
+    </div>
+  </div>
+</section>
+
     <!-- ASISTENTE EDUCATIVO -->
     <section id="asistente">
       <h2 class="section-title">Asistente educativo</h2>
@@ -900,6 +959,74 @@ const metricsDefault = {
   interestUsed: false
 };
 
+const PROFILE_KEY = "edufin-profile";
+const profileDefault = {
+  nombre: "",
+  email: ""
+};
+
+function loadProfile(){
+  try{
+    const saved = localStorage.getItem(PROFILE_KEY);
+    const parsed = saved ? JSON.parse(saved) : {};
+    return { ...profileDefault, ...parsed };
+  }catch(e){
+    return { ...profileDefault };
+  }
+}
+
+function saveProfile(p){
+  try{
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(p));
+  }catch(e){}
+}
+
+function renderPerfil(){
+  const p = loadProfile();
+  const m = loadMetrics(); // usamos las métricas que ya tenés
+
+  const elNombre = document.getElementById("perfil-nombre");
+  const elMailText = document.getElementById("perfil-mail-text");
+  const elLessons = document.getElementById("perfil-lessons");
+  const elQOk = document.getElementById("perfil-quizzes-ok");
+  const elQTotal = document.getElementById("perfil-quizzes-total");
+
+  if (elNombre){
+    elNombre.textContent = p.nombre ? p.nombre : "invitado/a";
+  }
+
+  if (elMailText){
+    if (p.email){
+      elMailText.textContent = "Correo asociado a este dispositivo: " + p.email;
+    }else{
+      elMailText.textContent = "Podés agregar un correo si querés, pero no es obligatorio.";
+    }
+  }
+
+  if (elLessons) elLessons.textContent = m.lessons;
+  if (elQOk) elQOk.textContent = m.quizzesOk;
+  if (elQTotal) elQTotal.textContent = m.quizzesTotal;
+}
+
+function guardarPerfilLocal(){
+  const nombreInput = document.getElementById("perfil-nombre-input");
+  const mailInput = document.getElementById("perfil-mail-input");
+
+  const nuevoPerfil = {
+    nombre: nombreInput.value.trim(),
+    email: mailInput.value.trim()
+  };
+
+  saveProfile(nuevoPerfil);
+  renderPerfil();
+}
+
+function borrarPerfilLocal(){
+  try{
+    localStorage.removeItem(PROFILE_KEY);
+  }catch(e){}
+  renderPerfil();
+}
 
   function loadMetrics(){
   try{
@@ -1150,10 +1277,12 @@ mInt.interestUsed = true;
 saveMetrics(mInt);
 }
 
-  renderMetrics();
+renderMetrics();
+renderPerfil();
 </script>
 </body>
 </html>
+
 
 
 
