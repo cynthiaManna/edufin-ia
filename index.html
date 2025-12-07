@@ -809,6 +809,30 @@
           </button>
         </div>
       </div>
+          <div class="card" style="margin-top:1.1rem;">
+      <p><strong>Logros CMF•IA</strong></p>
+      <ul style="font-size:.88rem;margin-top:.6rem;list-style:none;padding-left:0;">
+        <li>
+          <span id="badge-lesson">⬜</span>
+          Primera mini-lección generada
+        </li>
+        <li>
+          <span id="badge-quiz">⬜</span>
+          Primer quiz aprobado
+        </li>
+        <li>
+          <span id="badge-sim">⬜</span>
+          Usaste el simulador de presupuesto
+        </li>
+        <li>
+          <span id="badge-int">⬜</span>
+          Usaste la calculadora de interés compuesto
+        </li>
+      </ul>
+      <p class="tiny" style="margin-top:.5rem;">
+        Estos logros se guardan solo en este dispositivo. Podés reiniciarlos desde el botón de "Reiniciar progreso local".
+      </p>
+    </div>
     </section>
 
     <!-- PREMIUM / MODELO FREEMIUM -->
@@ -868,16 +892,26 @@
   }
 
   const STORAGE_KEY = "edufin-metrics";
-  const metricsDefault = { lessons:0, quizzesOk:0, quizzesTotal:0 };
+const metricsDefault = {
+  lessons: 0,
+  quizzesOk: 0,
+  quizzesTotal: 0,
+  simulatorUsed: false,
+  interestUsed: false
+};
+
 
   function loadMetrics(){
-    try{
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : {...metricsDefault};
-    }catch(e){
-      return {...metricsDefault};
-    }
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const parsed = saved ? JSON.parse(saved) : {};
+    // Mezcla datos viejos con los campos nuevos por defecto
+    return { ...metricsDefault, ...parsed };
+  }catch(e){
+    return { ...metricsDefault };
   }
+}
+
 
   function saveMetrics(m){
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(m)); }catch(e){}
@@ -885,16 +919,37 @@
   }
 
   function renderMetrics(){
-    const m = loadMetrics();
-    document.getElementById("stat-lessons").textContent = m.lessons;
-    document.getElementById("stat-quizzes-ok").textContent = m.quizzesOk;
-    document.getElementById("stat-quizzes-total").textContent = m.quizzesTotal;
+  const m = loadMetrics();
 
-    const lessonsPct = Math.min(100, m.lessons*10);
-    const quizzesPct = m.quizzesTotal ? Math.min(100, (m.quizzesOk/m.quizzesTotal)*100) : 0;
-    document.getElementById("bar-lessons").style.width = lessonsPct + "%";
-    document.getElementById("bar-quizzes").style.width = quizzesPct + "%";
-  }
+  // Métricas numéricas
+  const elLessons = document.getElementById("stat-lessons");
+  const elQOk = document.getElementById("stat-quizzes-ok");
+  const elQTotal = document.getElementById("stat-quizzes-total");
+  const barLessons = document.getElementById("bar-lessons");
+  const barQuizzes = document.getElementById("bar-quizzes");
+
+  if (elLessons) elLessons.textContent = m.lessons;
+  if (elQOk) elQOk.textContent = m.quizzesOk;
+  if (elQTotal) elQTotal.textContent = m.quizzesTotal;
+
+  const lessonsPct = Math.min(100, m.lessons * 10);
+  const quizzesPct = m.quizzesTotal ? Math.min(100, (m.quizzesOk / m.quizzesTotal) * 100) : 0;
+
+  if (barLessons) barLessons.style.width = lessonsPct + "%";
+  if (barQuizzes) barQuizzes.style.width = quizzesPct + "%";
+
+  // Logros / medallas
+  const badgeLesson = document.getElementById("badge-lesson");
+  const badgeQuiz = document.getElementById("badge-quiz");
+  const badgeSim = document.getElementById("badge-sim");
+  const badgeInt = document.getElementById("badge-int");
+
+  if (badgeLesson) badgeLesson.textContent = m.lessons > 0 ? "✅" : "⬜";
+  if (badgeQuiz) badgeQuiz.textContent = m.quizzesOk > 0 ? "✅" : "⬜";
+  if (badgeSim) badgeSim.textContent = m.simulatorUsed ? "✅" : "⬜";
+  if (badgeInt) badgeInt.textContent = m.interestUsed ? "✅" : "⬜";
+}
+
 
   function generarLeccion(){
     const nivel = document.getElementById("nivel").value;
@@ -1049,13 +1104,18 @@
     }
 
     if (saldo > 0) {
-      msgEl.textContent = "✔ Tienes un saldo positivo. Podrías analizar qué parte de ese excedente destinar a ahorro o a tus objetivos.";
-    } else if (saldo === 0) {
-      msgEl.textContent = "Tu saldo queda justo en cero. Esto indica que cualquier gasto extra puede llevarte a endeudarte.";
-    } else {
-      msgEl.textContent = "⚠ El saldo es negativo. Estás gastando más de lo que ganás. Revisá qué gastos pueden ajustarse o cómo aumentar tus ingresos.";
-    }
-  }
+     msgEl.textContent = "✔ Tienes un saldo positivo. Podrías analizar qué parte de ese excedente destinar a ahorro o a tus objetivos.";
+     } else if (saldo === 0) {
+     msgEl.textContent = "Tu saldo queda justo en cero. Esto indica que cualquier gasto extra puede llevarte a endeudarte.";
+     } else {
+     msgEl.textContent = "⚠ El saldo es negativo. Estás gastando más de lo que ganás. Revisá qué gastos pueden ajustarse o cómo aumentar tus ingresos.";
+     }
+
+     const mSim = loadMetrics();
+     mSim.simulatorUsed = true;
+     saveMetrics(mSim);
+     }
+
 
   document.getElementById("year").textContent = new Date().getFullYear().toString();
  function calcularInteres() {
@@ -1078,18 +1138,23 @@
   document.getElementById("int-res-total").textContent = total.toLocaleString("es-AR");
 
   if (tasa > 0 && aporte > 0 && anios > 0) {
-    document.getElementById("int-res-mensaje").textContent =
-      "🎯 Constancia + interés compuesto = crecimiento exponencial. ¡Bien pensado!";
-  } else {
-    document.getElementById("int-res-mensaje").textContent =
-      "Ingresá valores reales para ver la magia del interés compuesto.";
-  }
+  document.getElementById("int-res-mensaje").textContent =
+    "🎯 Constancia + interés compuesto = crecimiento exponencial. ¡Bien pensado!";
+} else {
+  document.getElementById("int-res-mensaje").textContent =
+    "Ingresá valores reales para ver la magia del interés compuesto.";
+}
+
+const mInt = loadMetrics();
+mInt.interestUsed = true;
+saveMetrics(mInt);
 }
 
   renderMetrics();
 </script>
 </body>
 </html>
+
 
 
 
