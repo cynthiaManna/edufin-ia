@@ -627,6 +627,97 @@
         </div>
       </div>
     </section>
+   
+    <!-- SIMULADOR DE PRESUPUESTO -->
+    <section id="simulador">
+      <h2 class="section-title">Simulador de presupuesto mensual</h2>
+      <p class="section-subtitle">
+        Ingresá tus ingresos y gastos mensuales para ver un resumen rápido de tu situación.
+        Es solo una guía orientativa para ayudarte a tomar conciencia de tus números.
+      </p>
+
+      <div class="grid-2">
+        <!-- Columna izquierda: formulario -->
+        <div class="card">
+          <div class="field">
+            <label for="sim-ingresos">Ingreso mensual total</label>
+            <input
+              id="sim-ingresos"
+              type="number"
+              min="0"
+              placeholder="Ej: 350000"
+            />
+          </div>
+
+          <div class="field">
+            <label for="sim-fijos">Gastos fijos (alquiler, servicios, etc.)</label>
+            <input
+              id="sim-fijos"
+              type="number"
+              min="0"
+              placeholder="Ej: 150000"
+            />
+          </div>
+
+          <div class="field">
+            <label for="sim-variables">Gastos variables (comida, transporte, etc.)</label>
+            <input
+              id="sim-variables"
+              type="number"
+              min="0"
+              placeholder="Ej: 80000"
+            />
+          </div>
+
+          <div class="field">
+            <label for="sim-deudas">Pagos de deudas (créditos, tarjetas)</label>
+            <input
+              id="sim-deudas"
+              type="number"
+              min="0"
+              placeholder="Ej: 50000"
+            />
+          </div>
+
+          <div class="field">
+            <label for="sim-otros">Otros gastos</label>
+            <input
+              id="sim-otros"
+              type="number"
+              min="0"
+              placeholder="Ej: 20000"
+            />
+          </div>
+
+          <button class="btn btn-primary" type="button" onclick="calcularPresupuesto()">
+            Calcular resumen
+          </button>
+
+          <p class="tiny" style="margin-top:.5rem;">
+            Este simulador es educativo y orientativo. No reemplaza un análisis financiero profesional.
+          </p>
+        </div>
+
+        <!-- Columna derecha: resultados -->
+        <div class="card">
+          <p><strong>Resumen del mes (simulación)</strong></p>
+          <ul style="font-size:.88rem;margin-top:.6rem;list-style:none;padding-left:0;">
+            <li>💰 Ingreso mensual: <span id="sim-res-ingresos">-</span></li>
+            <li>🧾 Total de gastos: <span id="sim-res-gastos">-</span></li>
+            <li>📊 Saldo final estimado: <span id="sim-res-saldo">-</span></li>
+          </ul>
+
+          <p id="sim-res-mensaje" class="tiny" style="margin-top:.7rem;">
+            Completá los campos y hace clic en "Calcular resumen" para ver tu resultado.
+          </p>
+
+          <p class="tiny" style="margin-top:.5rem;">
+            Sugerencia CMF•IA: si el saldo es negativo, revisá qué gastos pueden reducirse;
+            si es positivo, pensá qué porcentaje podrías destinar a ahorro o objetivos concretos.
+          </p>
+        </div>
+      </div>
+    </section>
 
     <!-- PROGRESO -->
     <section id="progreso">
@@ -880,11 +971,44 @@
     saveMetrics({...metricsDefault});
   }
 
+    function calcularPresupuesto() {
+    // Obtener valores de los campos (si están vacíos, se toman como 0)
+    const ingresos = parseFloat(document.getElementById("sim-ingresos").value) || 0;
+    const fijos = parseFloat(document.getElementById("sim-fijos").value) || 0;
+    const variables = parseFloat(document.getElementById("sim-variables").value) || 0;
+    const deudas = parseFloat(document.getElementById("sim-deudas").value) || 0;
+    const otros = parseFloat(document.getElementById("sim-otros").value) || 0;
+
+    const totalGastos = fijos + variables + deudas + otros;
+    const saldo = ingresos - totalGastos;
+
+    // Mostrar números formateados
+    document.getElementById("sim-res-ingresos").textContent = ingresos > 0 ? ingresos.toLocaleString("es-AR") : "-";
+    document.getElementById("sim-res-gastos").textContent = totalGastos > 0 ? totalGastos.toLocaleString("es-AR") : "-";
+    document.getElementById("sim-res-saldo").textContent = saldo.toLocaleString("es-AR");
+
+    const msgEl = document.getElementById("sim-res-mensaje");
+
+    if (ingresos === 0 && totalGastos === 0) {
+      msgEl.textContent = "Ingresá al menos tu ingreso mensual y algún gasto para ver el resultado.";
+      return;
+    }
+
+    if (saldo > 0) {
+      msgEl.textContent = "✔ Tienes un saldo positivo. Podrías analizar qué parte de ese excedente destinar a ahorro o a tus objetivos.";
+    } else if (saldo === 0) {
+      msgEl.textContent = "Tu saldo queda justo en cero. Esto indica que cualquier gasto extra puede llevarte a endeudarte.";
+    } else {
+      msgEl.textContent = "⚠ El saldo es negativo. Estás gastando más de lo que ganás. Revisá qué gastos pueden ajustarse o cómo aumentar tus ingresos.";
+    }
+  }
+
   document.getElementById("year").textContent = new Date().getFullYear().toString();
   renderMetrics();
 </script>
 </body>
 </html>
+
 
 
 
