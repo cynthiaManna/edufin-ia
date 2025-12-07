@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>EduFin IA – Plataforma de Educación Financiera Inteligente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="EduFin IA: plataforma de educación financiera personalizada con IA. Contenido educativo, no constituye asesoramiento financiero."
+  />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-card: #0b1220;
+      --primary: #059669;
+      --secondary: #22c55e;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --radius: 14px;
+      --shadow: 0 18px 40px rgba(15, 23, 42, 0.65);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background: radial-gradient(circle at top, #0f172a, #020617 55%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(2,6,23,0.9);
+      border-bottom: 1px solid rgba(148,163,184,0.35);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: linear-gradient(135deg,#16a34a,#0ea5e9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ecfdf5;
+      font-size: 1.2rem;
+      box-shadow: 0 0 18px rgba(34,197,94,0.7);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      font-size: .9rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      position: relative;
+      padding-bottom: .1rem;
+    }
+    .nav-links a::after {
+      content:"";
+      position:absolute;
+      left:0; bottom:-0.2rem;
+      width:0; height:2px;
+      border-radius:999px;
+      background:linear-gradient(90deg,#22c55e,#38bdf8);
+      transition:width .18s ease-out;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width:100%; }
+
+    .badge-legal {
+      font-size:.72rem;
+      color:#fecaca;
+      border-radius:999px;
+      border:1px solid rgba(248,113,113,0.9);
+      padding:.25rem .7rem;
+      margin-top:.35rem;
+      background:rgba(30,64,175,0.25);
+    }
+
+    .btn {
+      border-radius:999px;
+      padding:.5rem 1.15rem;
+      font-size:.85rem;
+      border:1px solid transparent;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:.3rem;
+      font-weight:500;
+      transition:transform .12s, box-shadow .12s, background .12s, border .12s;
+      background:none;
+      color:var(--text);
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,#16a34a,#15803d);
+      box-shadow:0 16px 35px rgba(22,163,74,0.5);
+    }
+    .btn-primary:hover{
+      transform:translateY(-1px);
+      box-shadow:0 20px 40px rgba(22,163,74,0.7);
+    }
+
+    .btn-outline {
+      border-color:rgba(148,163,184,0.6);
+      color:var(--muted);
+    }
+    .btn-outline:hover{
+      border-color:var(--accent);
+      color:var(--text);
+      box-shadow:0 12px 28px rgba(15,23,42,0.9);
+      transform:translateY(-1px);
+    }
+
+    main { padding: 1.5rem 0 3rem; }
+
+    section { padding: 2.5rem 0; }
+
+    /* Hero */
+    .hero {
+      display:grid;
+      grid-template-columns: minmax(0,1.3fr) minmax(0,1fr);
+      gap:2.2rem;
+      align-items:center;
+    }
+
+    .hero-badge {
+      display:inline-flex;
+      gap:.5rem;
+      padding:.25rem .65rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      background:rgba(15,23,42,0.9);
+      font-size:.78rem;
+      color:var(--muted);
+      margin-bottom:.9rem;
+    }
+    .hero-badge span{
+      background:rgba(16,185,129,0.2);
+      color:#bbf7d0;
+      padding:.1rem .55rem;
+      border-radius:999px;
+    }
+
+    .hero-title{
+      font-size:clamp(2.2rem,4vw,3rem);
+      font-weight:700;
+      letter-spacing:-.03em;
+      margin-bottom:.8rem;
+    }
+    .hero-title span{
+      background:linear-gradient(90deg,#16a34a,#22c55e,#38bdf8);
+      -webkit-background-clip:text;
+      color:transparent;
+    }
+
+    .hero-subtitle{
+      font-size:.98rem;
+      color:var(--muted);
+      max-width:34rem;
+      margin-bottom:1.3rem;
+    }
+
+    .chips {
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+      margin-bottom:1.4rem;
+    }
+    .chip{
+      font-size:.78rem;
+      padding:.25rem .65rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      color:var(--muted);
+      background:rgba(15,23,42,0.9);
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.8rem;
+      align-items:center;
+      margin-bottom:1rem;
+    }
+
+    .hero-note{
+      font-size:.8rem;
+      color:var(--muted);
+    }
+    .hero-note strong{ color:#e5e7eb; }
+
+    .hero-card{
+      background:var(--bg-card);
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,0.5);
+      padding:1.1rem 1.1rem 1.2rem;
+      box-shadow:var(--shadow);
+      font-size:.85rem;
+    }
+
+    .tab-header{
+      display:flex;
+      justify-content:space-between;
+      gap:.5rem;
+      margin-bottom:.7rem;
+      font-size:.78rem;
+      color:var(--muted);
+    }
+
+    .pill-tab{
+      border-radius:999px;
+      padding:.2rem .6rem;
+      border:1px solid rgba(148,163,184,0.5);
+    }
+
+    .chat-box{
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,0.6);
+      padding:.6rem;
+      background:rgba(15,23,42,0.95);
+      margin-bottom:.7rem;
+    }
+    .bubble{
+      max-width:100%;
+      border-radius:12px;
+      padding:.4rem .6rem;
+      margin-bottom:.3rem;
+    }
+    .bubble.user{
+      margin-left:auto;
+      background:rgba(34,197,94,0.15);
+      border:1px solid rgba(34,197,94,0.6);
+    }
+    .bubble.bot{
+      background:rgba(15,23,42,1);
+      border:1px solid rgba(148,163,184,0.7);
+    }
+
+    .chat-input-row{
+      display:flex;
+      gap:.4rem;
+      margin-top:.4rem;
+      align-items:center;
+    }
+    .chat-input-row input{
+      flex:1;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.7);
+      background:rgba(15,23,42,0.95);
+      padding:.4rem .7rem;
+      font-size:.8rem;
+      color:var(--text);
+      outline:none;
+    }
+    .chat-input-row input::placeholder{ color:var(--muted); }
+
+    .tiny{
+      font-size:.74rem;
+      color:var(--muted);
+    }
+
+    /* Layout cards */
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1.3rem;
+    }
+    .card{
+      background:var(--bg-card);
+      border-radius:var(--radius);
+      border:1px solid rgba(148,163,184,0.4);
+      padding:1rem;
+      box-shadow:var(--shadow);
+      font-size:.9rem;
+    }
+
+    .section-title{
+      font-size:1.5rem;
+      margin-bottom:.3rem;
+      letter-spacing:-.02em;
+    }
+    .section-subtitle{
+      font-size:.9rem;
+      color:var(--muted);
+      max-width:32rem;
+      margin-bottom:1.3rem;
+    }
+
+    .field{
+      margin-bottom:.7rem;
+      font-size:.85rem;
+    }
+    .field label{
+      display:block;
+      margin-bottom:.25rem;
+      color:var(--muted);
+      font-size:.78rem;
+    }
+    .field select,
+    .field input,
+    .field textarea{
+      width:100%;
+      border-radius:10px;
+      border:1px solid rgba(148,163,184,0.6);
+      background:rgba(15,23,42,0.95);
+      padding:.4rem .6rem;
+      font-size:.85rem;
+      color:var(--text);
+      outline:none;
+      resize:vertical;
+    }
+    .field textarea{ min-height:70px; max-height:160px; }
+    .field small{ font-size:.75rem; color:var(--muted); }
+
+    .quiz-question{ margin-bottom:.5rem; font-weight:500; }
+    .quiz-options{ list-style:none; margin-bottom:.6rem; }
+    .quiz-options li{
+      margin-bottom:.35rem;
+      font-size:.85rem;
+      cursor:pointer;
+    }
+    .quiz-options li input{ margin-right:.35rem; }
+
+    .progress-bar{
+      width:100%;
+      height:10px;
+      border-radius:999px;
+      background:#020617;
+      border:1px solid rgba(148,163,184,0.6);
+      overflow:hidden;
+      margin-top:.35rem;
+    }
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,#16a34a,#22c55e,#38bdf8);
+      transition:width .25s ease-out;
+    }
+
+    .tag{
+      font-size:.7rem;
+      padding:.12rem .45rem;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.6);
+      color:var(--muted);
+      display:inline-block;
+      margin-right:.3rem;
+      margin-bottom:.3rem;
+    }
+
+    footer{
+      padding:2rem 0 1.5rem;
+      border-top:1px solid rgba(148,163,184,0.4);
+      font-size:.8rem;
+      color:var(--muted);
+    }
+    .footer-row{
+      display:flex;
+      justify-content:space-between;
+      gap:.8rem;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    @media (max-width:900px){
+      .hero{ grid-template-columns:minmax(0,1fr); }
+      .nav-links{ display:none; }
+      .grid-2{ grid-template-columns:minmax(0,1fr); }
+    }
+    @media (max-width:640px){
+      .container{ padding:1.1rem; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <div class="logo">
+      <div class="logo-icon">$</div>
+      <div>
+        <div>EduFin IA</div>
+        <div style="font-size:.72rem;font-weight:400;color:var(--muted);">
+          Educación financiera con IA
+        </div>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="#asistente">Asistente</a>
+      <a href="#quizzes">Quizzes</a>
+      <a href="#progreso">Progreso</a>
+      <a href="#premium">Premium</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div>
+        <div class="hero-badge">
+          <span>Contenido educativo</span>
+          No constituye asesoramiento financiero.
+        </div>
+        <h1 class="hero-title">
+          Aprende a gestionar tu dinero con <span>EduFin IA</span>.
+        </h1>
+        <p class="hero-subtitle">
+          Plataforma de educación financiera personalizada y gamificada.
+          Recibí explicaciones simples, ejercicios prácticos y quizzes
+          adaptados a tu nivel para mejorar tus decisiones y construir
+          estabilidad económica.
+        </p>
+        <div class="chips">
+          <div class="chip">📚 Lecciones personalizadas</div>
+          <div class="chip">🧩 Quizzes interactivos</div>
+          <div class="chip">📊 Métricas y reportes de avance</div>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="scrollToId('asistente')">
+            Empezar ahora
+          </button>
+          <button class="btn btn-outline" onclick="scrollToId('premium')">
+            Ver versión Premium
+          </button>
+        </div>
+        <p class="hero-note">
+          🔐 <strong>Importante:</strong> todo el contenido es educativo. No reemplaza
+          el asesoramiento financiero profesional.
+        </p>
+        <span class="badge-legal">
+          Contenido educativo, no constituye asesoramiento financiero.
+        </span>
+      </div>
+
+      <!-- Panel lado derecho: mini tablero -->
+      <div class="hero-card">
+        <div class="tab-header">
+          <div>Métricas rápidas</div>
+          <div class="pill-tab">Progreso hoy</div>
+        </div>
+        <div class="tiny">Lecciones completadas</div>
+        <div class="progress-bar">
+          <div id="bar-lessons" class="progress-fill"></div>
+        </div>
+        <div class="tiny" style="margin-top:.4rem;">Quizzes aprobados</div>
+        <div class="progress-bar">
+          <div id="bar-quizzes" class="progress-fill"></div>
+        </div>
+        <p class="tiny" style="margin-top:.5rem;">
+          Estos indicadores se calculan localmente en tu navegador
+          para que veas tu evolución de forma sencilla.
+        </p>
+      </div>
+    </section>
+
+    <!-- ASISTENTE EDUCATIVO -->
+    <section id="asistente">
+      <h2 class="section-title">Asistente educativo</h2>
+      <p class="section-subtitle">
+        Elegí tu nivel y tema. El asistente genera una explicación simple,
+        un ejemplo práctico y una pequeña tarea para que apliques el concepto.
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="field">
+            <label for="nivel">Nivel de conocimiento</label>
+            <select id="nivel">
+              <option value="basico">Principiante</option>
+              <option value="intermedio">Intermedio</option>
+              <option value="avanzado">Avanzado</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tema">Tema</label>
+            <select id="tema">
+              <option value="presupuesto">Presupuesto y control de gastos</option>
+              <option value="ahorro">Ahorro y fondo de emergencia</option>
+              <option value="deudas">Gestión de deudas</option>
+              <option value="interes">Interés compuesto</option>
+              <option value="inversion">Introducción a inversiones</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="objetivo">Tu objetivo financiero principal</label>
+            <input
+              id="objetivo"
+              type="text"
+              placeholder="Ej: pagar deudas y empezar a ahorrar para mi casa"
+            />
+          </div>
+          <button class="btn btn-primary" onclick="generarLeccion()">
+            Generar mini-lección
+          </button>
+          <p class="tiny" style="margin-top:.5rem;">
+            Esta demo usa reglas predefinidas. Más adelante puede conectarse
+            a un modelo de IA generativa para crear contenido aún más
+            personalizado.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="chat-box" id="chat-leccion">
+            <div class="bubble bot">
+              👋 Hola, soy EduFin IA. Elegí tu nivel y tema, y haré un resumen
+              adaptado para vos.
+            </div>
+          </div>
+          <div class="tiny">
+            Etiquetas:
+            <span class="tag">Presupuesto</span>
+            <span class="tag">Ahorro</span>
+            <span class="tag">Deuda</span>
+            <span class="tag">Inversión</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZZES -->
+    <section id="quizzes">
+      <h2 class="section-title">Quizzes interactivos</h2>
+      <p class="section-subtitle">
+        Poné a prueba lo que vas aprendiendo. Los resultados se suman a tus
+        métricas de progreso.
+      </p>
+
+      <div class="grid-2">
+        <!-- Quiz 1 -->
+        <div class="card">
+          <div class="quiz-question">
+            1. ¿Qué es un presupuesto personal?
+          </div>
+          <ul class="quiz-options" id="quiz1-options">
+            <li>
+              <label>
+                <input type="radio" name="quiz1" value="a" />
+                Un registro de ingresos y gastos que te ayuda a planificar cómo usar tu dinero.
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="quiz1" value="b" />
+                Una lista de deseos de cosas que quiero comprar.
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="quiz1" value="c" />
+                Un préstamo que otorga el banco.
+              </label>
+            </li>
+          </ul>
+          <button class="btn btn-outline" onclick="corregirQuiz(1,'a')">
+            Corregir
+          </button>
+          <p id="quiz1-msg" class="tiny" style="margin-top:.4rem;"></p>
+        </div>
+
+        <!-- Quiz 2 -->
+        <div class="card">
+          <div class="quiz-question">
+            2. ¿Cuál de estas opciones describe mejor el interés compuesto?
+          </div>
+          <ul class="quiz-options" id="quiz2-options">
+            <li>
+              <label>
+                <input type="radio" name="quiz2" value="a" />
+                Interés que se calcula solo sobre el capital inicial.
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="quiz2" value="b" />
+                Interés que se calcula sobre el capital inicial y los intereses acumulados.
+              </label>
+            </li>
+            <li>
+              <label>
+                <input type="radio" name="quiz2" value="c" />
+                Una comisión fija que cobra el banco.
+              </label>
+            </li>
+          </ul>
+          <button class="btn btn-outline" onclick="corregirQuiz(2,'b')">
+            Corregir
+          </button>
+          <p id="quiz2-msg" class="tiny" style="margin-top:.4rem;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESO -->
+    <section id="progreso">
+      <h2 class="section-title">Métricas y reportes</h2>
+      <p class="section-subtitle">
+        Visualizá tu avance. En una versión completa, estas métricas pueden
+        exportarse a PDF y sincronizarse con una cuenta de usuario.
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <p><strong>Resumen local (demo)</strong></p>
+          <p class="tiny" style="margin-top:.2rem;">
+            Los datos se guardan en este dispositivo usando almacenamiento local
+            (no se envían a ningún servidor).
+          </p>
+          <ul style="font-size:.88rem;margin-top:.6rem;list-style:none;padding-left:0;">
+            <li>📚 Lecciones generadas: <span id="stat-lessons">0</span></li>
+            <li>✅ Quizzes aprobados: <span id="stat-quizzes-ok">0</span></li>
+            <li>🧩 Quizzes realizados: <span id="stat-quizzes-total">0</span></li>
+          </ul>
+          <button class="btn btn-outline" style="margin-top:.7rem;" onclick="resetProgreso()">
+            Reiniciar progreso local
+          </button>
+        </div>
+
+        <div class="card">
+          <p><strong>Exportar reporte (demo)</strong></p>
+          <p class="tiny" style="margin-top:.2rem;">
+            Aquí podrías integrar una librería de generación de PDF (por ejemplo
+            jsPDF) para crear un reporte descargable con tu avance.
+          </p>
+          <button class="btn btn-outline" style="margin-top:.7rem;" disabled>
+            Generar PDF (versión completa)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREMIUM / MODELO FREEMIUM -->
+    <section id="premium">
+      <h2 class="section-title">Versión gratuita y Premium</h2>
+      <p class="section-subtitle">
+        EduFin IA puede funcionar bajo un modelo freemium: contenido básico
+        gratuito y herramientas avanzadas mediante suscripción mensual.
+      </p>
+
+      <div class="grid-2">
+        <div class="card">
+          <p><strong>Gratis</strong></p>
+          <ul style="font-size:.85rem;margin-top:.5rem;padding-left:1rem;">
+            <li>Acceso a lecciones básicas generadas por el asistente.</li>
+            <li>Quizzes interactivos y métricas generales.</li>
+            <li>Acceso desde cualquier dispositivo.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <p><strong>Premium (ej. USD 5/mes)</strong></p>
+          <ul style="font-size:.85rem;margin-top:.5rem;padding-left:1rem;">
+            <li>Simulador de presupuesto y metas financieras.</li>
+            <li>Reportes avanzados en PDF.</li>
+            <li>Banco ampliado de preguntas y planes personalizados.</li>
+          </ul>
+          <button class="btn btn-primary" style="margin-top:.7rem;" disabled>
+            Activar suscripción (Stripe – demo)
+          </button>
+          <p class="tiny" style="margin-top:.4rem;">
+            En producción se integraría un proveedor de pagos como Stripe y se
+            vincularía la suscripción a la base de datos de usuarios.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container footer-row">
+      <div>© <span id="year"></span> EduFin IA. Contenido educativo.</div>
+      <div>Esta es una demo técnica. Adaptar a requisitos legales y de negocio reales.</div>
+    </div>
+  </footer>
+</main>
+
+<script>
+  function scrollToId(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    window.scrollTo({ top: el.offsetTop - 70, behavior: "smooth" });
+  }
+
+  const STORAGE_KEY = "edufin-metrics";
+  const metricsDefault = { lessons:0, quizzesOk:0, quizzesTotal:0 };
+
+  function loadMetrics(){
+    try{
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {...metricsDefault};
+    }catch(e){
+      return {...metricsDefault};
+    }
+  }
+
+  function saveMetrics(m){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(m)); }catch(e){}
+    renderMetrics();
+  }
+
+  function renderMetrics(){
+    const m = loadMetrics();
+    document.getElementById("stat-lessons").textContent = m.lessons;
+    document.getElementById("stat-quizzes-ok").textContent = m.quizzesOk;
+    document.getElementById("stat-quizzes-total").textContent = m.quizzesTotal;
+
+    const lessonsPct = Math.min(100, m.lessons*10);
+    const quizzesPct = m.quizzesTotal ? Math.min(100, (m.quizzesOk/m.quizzesTotal)*100) : 0;
+    document.getElementById("bar-lessons").style.width = lessonsPct + "%";
+    document.getElementById("bar-quizzes").style.width = quizzesPct + "%";
+  }
+
+  function generarLeccion(){
+    const nivel = document.getElementById("nivel").value;
+    const tema = document.getElementById("tema").value;
+    const objetivo = document.getElementById("objetivo").value.trim();
+
+    const chat = document.getElementById("chat-leccion");
+    chat.innerHTML = "";
+
+    const userText = `Quiero aprender sobre "${document.getElementById("tema").selectedOptions[0].text}" (${nivel})${objetivo ? " y mi objetivo es: " + objetivo : ""}.`;
+
+    const bUser = document.createElement("div");
+    bUser.className = "bubble user";
+    bUser.textContent = userText;
+    chat.appendChild(bUser);
+
+    const bBot = document.createElement("div");
+    bBot.className = "bubble bot";
+    bBot.innerHTML = generarContenido(nivel, tema, objetivo);
+    chat.appendChild(bBot);
+
+    const m = loadMetrics();
+    m.lessons += 1;
+    saveMetrics(m);
+  }
+
+  function generarContenido(nivel, tema, objetivo){
+    const objTxt = objetivo ? `<br><br><strong>Con tu objetivo:</strong> ${objetivo}.` : "";
+    let base = "";
+
+    if(tema === "presupuesto"){
+      base = `
+        <strong>Resumen:</strong> Un presupuesto es un plan que indica cuánto
+        dinero entra, cuánto sale y en qué lo usás cada mes.
+        <br><br><strong>Ejemplo práctico:</strong> Anota tus ingresos y separa tus gastos en
+        categorías (fijos, variables y antojos). Detectá al menos una “fuga”
+        que puedas reducir.
+        <br><br><strong>Tarea:</strong> crea una tabla simple con 3 columnas: ingresos, gastos
+        fijos, gastos variables. Cargá tus datos reales de este mes.
+      `;
+    } else if(tema === "ahorro"){
+      base = `
+        <strong>Resumen:</strong> El ahorro es la parte de tu ingreso que decidís reservar
+        para el futuro en lugar de gastarla ahora.
+        <br><br><strong>Ejemplo práctico:</strong> Elegí un porcentaje realista (por ej. 5–10%)
+        de tu ingreso para destinarlo a un fondo de emergencia.
+        <br><br><strong>Tarea:</strong> define un monto mínimo mensual de ahorro y
+        programá un recordatorio el día de cobro para separar ese dinero.
+      `;
+    } else if(tema === "deudas"){
+      base = `
+        <strong>Resumen:</strong> Una deuda saludable es aquella que podés pagar sin
+        comprometer tus gastos básicos ni tu capacidad de ahorro.
+        <br><br><strong>Ejemplo práctico:</strong> Listá todas tus deudas con: saldo, tasa de
+        interés aproximada y cuota mensual.
+        <br><br><strong>Tarea:</strong> ordená tus deudas por tasa o por monto y elegí una
+        estrategia (bola de nieve o avalancha) para ir cancelándolas.
+      `;
+    } else if(tema === "interes"){
+      base = `
+        <strong>Resumen:</strong> El interés compuesto es el interés que se calcula sobre
+        el capital inicial y también sobre los intereses acumulados.
+        <br><br><strong>Ejemplo práctico:</strong> Si invertís 100 durante varios años y
+        reinvertís los intereses, el crecimiento se acelera con el tiempo.
+        <br><br><strong>Tarea:</strong> buscá una calculadora de interés compuesto online e
+        ingresá un monto, una tasa y un plazo para ver el resultado.
+      `;
+    } else if(tema === "inversion"){
+      base = `
+        <strong>Resumen:</strong> Invertir es poner tu dinero en instrumentos que pueden
+        generar un rendimiento, siempre con un nivel de riesgo asociado.
+        <br><br><strong>Ejemplo práctico:</strong> Antes de invertir, definí tu horizonte de
+        tiempo (corto, mediano, largo plazo) y tu tolerancia al riesgo.
+        <br><br><strong>Tarea:</strong> escribí una lista de 3 objetivos que te gustaría
+        alcanzar con inversiones (ej: jubilación, viaje, compra de vivienda).
+      `;
+    }
+
+    if(nivel === "basico"){
+      base += `
+        <br><br><strong>Tono principiante:</strong> si algo no se entiende, podés
+        reformular la explicación con ejemplos del día a día como sueldos,
+        gastos del hogar y metas simples.
+      `;
+    }else if(nivel === "intermedio"){
+      base += `
+        <br><br><strong>Tono intermedio:</strong> empezamos a conectar estos conceptos
+        con decisiones más grandes: créditos, plazos y comparación de
+        alternativas.
+      `;
+    }else{
+      base += `
+        <br><br><strong>Tono avanzado:</strong> podés complementar este tema con
+        indicadores, tasas reales, inflación y diversificación de cartera.
+      `;
+    }
+
+    return base + objTxt +
+      `<br><br><em>Recordatorio: esta información es educativa y no constituye asesoramiento financiero personalizado.</em>`;
+  }
+
+  function corregirQuiz(num, correcta){
+    const name = "quiz" + num;
+    const radios = document.querySelectorAll('input[name="'+name+'"]');
+    let seleccion = null;
+    radios.forEach(r => { if(r.checked) seleccion = r.value; });
+    const msg = document.getElementById(name+"-msg");
+    const m = loadMetrics();
+    m.quizzesTotal += 1;
+
+    if(!seleccion){
+      msg.textContent = "Elegí una opción para corregir.";
+      m.quizzesTotal -= 1;
+      saveMetrics(m);
+      return;
+    }
+
+    if(seleccion === correcta){
+      msg.textContent = "✅ ¡Correcto! Muy bien.";
+      m.quizzesOk += 1;
+    }else{
+      msg.textContent = "❌ No es correcto. Revisá la explicación del tema y volvé a intentarlo.";
+    }
+    saveMetrics(m);
+  }
+
+  function resetProgreso(){
+    saveMetrics({...metricsDefault});
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear().toString();
+  renderMetrics();
+</script>
+</body>
+</html>
