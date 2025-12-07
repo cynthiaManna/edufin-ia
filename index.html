@@ -724,6 +724,55 @@
       </div>
     </section>
 
+    <!-- CALCULADORA INTERÉS COMPUESTO -->
+<section id="interes">
+  <h2 class="section-title">Calculadora de interés compuesto</h2>
+  <p class="section-subtitle">
+    Ingresá un monto mensual, una tasa anual estimada y el plazo. CMF•IA te mostrará cuánto podrías acumular con constancia.
+  </p>
+
+  <div class="grid-2">
+    <!-- Inputs -->
+    <div class="card">
+      <div class="field">
+        <label for="int-aporte">Aporte mensual (ARS)</label>
+        <input id="int-aporte" type="number" min="0" placeholder="Ej: 25000" />
+      </div>
+
+      <div class="field">
+        <label for="int-tasa">Tasa anual (%)</label>
+        <input id="int-tasa" type="number" min="0" step="0.1" placeholder="Ej: 60" />
+      </div>
+
+      <div class="field">
+        <label for="int-anios">Años</label>
+        <input id="int-anios" type="number" min="1" placeholder="Ej: 5" />
+      </div>
+
+      <button class="btn btn-primary" type="button" onclick="calcularInteres()">
+        Calcular proyección
+      </button>
+
+      <p class="tiny" style="margin-top:.5rem;">
+        Esta calculadora es orientativa. No proyecta inflación, impuestos ni variaciones reales de mercado.
+      </p>
+    </div>
+
+    <!-- Resultados -->
+    <div class="card">
+      <p><strong>Resultado estimado</strong></p>
+      <ul style="font-size:.9rem;list-style:none;padding-left:0;">
+        <li>🟢 Capital aportado: <span id="int-res-aportado">-</span></li>
+        <li>📈 Interés generado: <span id="int-res-interes">-</span></li>
+        <li>💰 Total acumulado: <span id="int-res-total">-</span></li>
+      </ul>
+      <p id="int-res-mensaje" class="tiny" style="margin-top:.7rem;">
+        Ingresá los datos y hacé clic en "Calcular proyección" para ver el resultado.
+      </p>
+    </div>
+  </div>
+</section>
+
     <!-- PROGRESO -->
     <section id="progreso">
       <h2 class="section-title">Métricas y reportes</h2>
@@ -1009,10 +1058,39 @@
   }
 
   document.getElementById("year").textContent = new Date().getFullYear().toString();
+ function calcularInteres() {
+  const aporte = parseFloat(document.getElementById("int-aporte").value) || 0;
+  const tasa = parseFloat(document.getElementById("int-tasa").value) / 100 || 0;
+  const anios = parseFloat(document.getElementById("int-anios").value) || 0;
+  const meses = anios * 12;
+
+  let total = 0;
+
+  for (let i = 0; i < meses; i++) {
+    total = (total + aporte) * (1 + tasa / 12);
+  }
+
+  const aportado = aporte * meses;
+  const interes = total - aportado;
+
+  document.getElementById("int-res-aportado").textContent = aportado.toLocaleString("es-AR");
+  document.getElementById("int-res-interes").textContent = interes.toLocaleString("es-AR");
+  document.getElementById("int-res-total").textContent = total.toLocaleString("es-AR");
+
+  if (tasa > 0 && aporte > 0 && anios > 0) {
+    document.getElementById("int-res-mensaje").textContent =
+      "🎯 Constancia + interés compuesto = crecimiento exponencial. ¡Bien pensado!";
+  } else {
+    document.getElementById("int-res-mensaje").textContent =
+      "Ingresá valores reales para ver la magia del interés compuesto.";
+  }
+}
+
   renderMetrics();
 </script>
 </body>
 </html>
+
 
 
 
